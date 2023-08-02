@@ -12,4 +12,12 @@ jobs:
           submodules: recursive
       - name: checks docker presence
         run: |
-          docker ps
+          docker pull koushikark/openwrt:latest
+          docker run -it koushikark/openwrt
+          sleep 3
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: check checked out dir
+        run: |
+          cd $GITHUB_WORKSPACE
+          ls -all
