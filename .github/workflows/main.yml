@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: docker://openwrt/imagebuilder:zynq-generic-23.05-SNAPSHOT
+      options: --user root
     steps:
       - name: checkout
         uses: actions/checkout@v3
