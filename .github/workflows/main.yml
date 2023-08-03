@@ -7,8 +7,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: docker://koushikark/openwrt:latest
-      options: --platform linux/arm64/v8
+      image: docker://openwrt/imagebuilder:zynq-generic-23.05-SNAPSHOT
     steps:
       - name: checkout
         uses: actions/checkout@v3
