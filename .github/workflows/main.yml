@@ -6,15 +6,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: docker://koushikark/openwrt:latest
+      options: --platform linux/arm64/v8
     steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
-      - name: checks docker presence
-        run: |
-          docker pull koushikark/openwrt:latest
-          docker run -it koushikark/openwrt
-          sleep 3
       - name: checkout
         uses: actions/checkout@v3
       - name: check checked out dir
