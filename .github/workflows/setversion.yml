@@ -12,8 +12,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: prcomm
-        # This step clones the branch of the PR associated with the triggering phrase, but only if it is triggered.
-      - name: clone branch of PR
+      - uses: actions/checkout@v4
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+      - name: Echo Version Number to PR
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         run: |
-          echo "version=${{ steps.prcomm.outputs.TRAILING_TOKEN }}"
+          echo "version=${{ steps.prcomm.outputs.TRAILING_TOKEN }}" > version.txt
+      - name: Commit changes to the PR branch
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+        run: |
+          git config --global user.name 'actions-bot'
+          git config --global user.email 'actions-bot@users.noreply.github.com'
+          git commit -am "[fix-pr-command] fixes"
+          git push
