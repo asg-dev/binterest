@@ -1,30 +1,26 @@
 name: Set Version
 on: [issue_comment]
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  label-pr:
+  process-set-version:
     runs-on: ubuntu-latest
     steps:
       - name: listen for PR Comments
+        id: prcomm
         uses: machine-learning-apps/actions-chatops@master
         with:
           TRIGGER_PHRASE: "/set-version"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        id: prcomm
-      - uses: actions/checkout@v4
+      - name: checkout repository
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
-      - name: Commit changes to the PR branch
-        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions/checkout@v4
+      - name: add versioning
         run: |
           git config --global user.name 'actions-bot'
           git config --global user.email 'actions-bot@users.noreply.github.com'
           gh pr checkout ${{ steps.prcomm.outputs.PULL_REQUEST_NUMBER }}
-          echo "ref:${{ steps.prcomm.outputs.BRANCH_NAME }}"
-          echo "headref:${{ github.head_ref }}"
-          echo "version=${{ steps.prcomm.outputs.TRAILING_TOKEN }}" > version.txt
+          echo "version=${{ steps.prcomm.outputs.TRAILING_TOKEN }}" > version
           git add -A
-          git commit -m "[fix-pr-command] fixes"
+          git commit -m "[set-version-command] include version file"
           git push
