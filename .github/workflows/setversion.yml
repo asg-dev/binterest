@@ -9,7 +9,6 @@ jobs:
         uses: machine-learning-apps/actions-chatops@master
         with:
           TRIGGER_PHRASE: "/set-version"
-          INDICATOR_LABEL: "set-version"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: prcomm
