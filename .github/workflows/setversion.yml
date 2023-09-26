@@ -4,8 +4,15 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
+  detect-set-version:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/set-version') }}
+    steps:
+      - run: |
+          echo "set-version detected"
   process-set-version:
     runs-on: ubuntu-latest
+    if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/set-version') }}
     steps:
       - name: listen for PR Comments
         id: prcomm
