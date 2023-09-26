@@ -1,13 +1,20 @@
-name: Slash Command Dispatch
-on:
-  issue_comment:
-    types: [created]
+name: Set Version
+on: [issue_comment]
+
 jobs:
-  slashCommandDispatch:
+  label-pr:
     runs-on: ubuntu-latest
     steps:
-      - name: Slash Command Dispatch
-        uses: peter-evans/slash-command-dispatch@v3
+      - name: listen for PR Comments
+        uses: machine-learning-apps/actions-chatops@master
         with:
-          token: ${{ secrets.PAT }}
-          commands: set-version
+          TRIGGER_PHRASE: "/set-version"
+          INDICATOR_LABEL: "set-version"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: prcomm
+        # This step clones the branch of the PR associated with the triggering phrase, but only if it is triggered.
+      - name: clone branch of PR
+        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+        run: |
+          echo "version=${{ steps.prcomm.outputs.TRAILING_TOKEN }}"
