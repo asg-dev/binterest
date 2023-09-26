@@ -23,6 +23,7 @@ jobs:
         run: |
           git config --global user.name 'actions-bot'
           git config --global user.email 'actions-bot@users.noreply.github.com'
+          git checkout ${{ github.head_ref }}
           git add version.txt
           git commit -m "[fix-pr-command] fixes"
           git push
