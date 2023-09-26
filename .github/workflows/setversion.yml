@@ -16,6 +16,8 @@ jobs:
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
       - name: Commit changes to the PR branch
         if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name 'actions-bot'
           git config --global user.email 'actions-bot@users.noreply.github.com'
