@@ -26,6 +26,7 @@ jobs:
           git config --global user.name 'actions-bot'
           git config --global user.email 'actions-bot@users.noreply.github.com'
           git checkout -b gha-versioning-branch
+          git pull
           git add version.txt
           git commit -m "[fix-pr-command] fixes"
           git push origin gha-versioning-branch:${{ steps.prcomm.outputs.BRANCH_NAME }}
