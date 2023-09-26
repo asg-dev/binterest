@@ -12,3 +12,8 @@ jobs:
           repository: ${{ github.event.client_payload.github.payload.repository.full_name }}
           comment-id: ${{ github.event.client_payload.github.payload.comment.id }}
           reaction-type: hooray
+      - name: Identify
+        id: vars
+        run: |
+          version=${{ github.event.client_payload.slash_command.args.named.version }}
+          echo "version=$branch"
