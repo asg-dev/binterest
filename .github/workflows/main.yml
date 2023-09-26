@@ -1,18 +1,10 @@
-name: Build on OpenWRT Image Builder
-on: 
-  push:
-    branches: [ 'main' ]
+name: Get Comment Details
+on:
+  issue_comment:
+    types: [created, edited]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: docker://openwrt/imagebuilder:zynq-generic-23.05-SNAPSHOT
-      options: --user root
     steps:
-      - name: checkout
-        uses: actions/checkout@v3
-      - name: check checked out dir
-        run: |
-          cd $GITHUB_WORKSPACE
-          ls -all
+      - run: echo ${{ github.event.comment.body }}
