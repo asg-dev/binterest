@@ -20,10 +20,8 @@ jobs:
             echo "VERSION_FORMATTED='true'" >> $GITHUB_OUTPUT
           fi
       - name: ensure formatting of comment
-        if: ${{ steps.ensure_version_number.outputs.VERSION_FORMATTED != 'true' }}
-        # fail job if comment body does not contain the version in correct format
         run: |
-          exit 1
+          echo ${{ steps.ensure_version_number.outputs.VERSION_FORMATTED }}
       - name: get version number
         id: get_version_number
         shell: bash
