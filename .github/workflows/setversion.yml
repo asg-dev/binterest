@@ -30,3 +30,8 @@ jobs:
           git add -A
           git commit -m "[set-version-command] include/update version file"
           git push
+      - name: React to comment
+        uses: dkershner6/reaction-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          reaction: "hooray"
