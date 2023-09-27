@@ -6,22 +6,22 @@ env:
 jobs:
   process-set-version:
     runs-on: ubuntu-latest
+    # run only if it's a comment on a pull_request and the comment body contains the string '/set-version'
     if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/set-version') }}
     steps:
       - name: listen for PR Comments
-        id: set_version
+        id: set_version_handler
         uses: machine-learning-apps/actions-chatops@master
         with:
           TRIGGER_PHRASE: "/set-version"
       - name: checkout repository
-        if: steps.prcomm.outputs.BOOL_TRIGGERED == 'true'
         uses: actions/checkout@v4
       - name: add versioning
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          gh pr checkout ${{ steps.set_version.outputs.PULL_REQUEST_NUMBER }}
-          echo "version=${{ steps.set_version.outputs.TRAILING_TOKEN }}" > version
+          gh pr checkout ${{ steps.set_version_handler.outputs.PULL_REQUEST_NUMBER }}
+          echo -n "${{ steps.set_version_handler.outputs.TRAILING_TOKEN }}" > version
           git add -A
           git commit -m "[set-version-command] include version file"
           git push
