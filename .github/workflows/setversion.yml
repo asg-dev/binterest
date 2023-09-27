@@ -45,7 +45,7 @@ jobs:
           if [[ $VERSIONING_ENSURE_ONLY_MAIN && $base_branch != "main" ]]; then 
             echo -n 'You can only use /set-version when the base branch of your PR is main. Your current base branch is $base_branch.\n\n\nTo turn this check off, set VERSIONING_ENSURE_ONLY_MAIN to false in set_version.yml.'
             exit 1
-          }
+          fi
           gh pr checkout ${{ github.event.issue.number }}
           echo -n "${{ steps.get_version_number.outputs.VERSION_NUMBER }}" > version
           git add -A
