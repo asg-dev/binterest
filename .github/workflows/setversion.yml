@@ -22,7 +22,7 @@ jobs:
           fi
       - name: ensure formatting of comment
         # if unformatted, don't proceed with the next steps
-        if: ${{ steps.ensure_version_number.outputs.VERSION_FORMATTED != true }}
+        if: ${{ steps.ensure_version_number.outputs.VERSION_FORMATTED != "true" }}
         run: |
           exit 1
       - name: get version number
