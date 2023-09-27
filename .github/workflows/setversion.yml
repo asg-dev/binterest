@@ -6,7 +6,7 @@ on:
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   # VERSIONING_ENSURE_ONLY_MAIN can be used to enforce versioning functionality only when the base branch of the PR is main.
-  VERSIONING_ENSURE_ONLY_MAIN: true
+  VERSIONING_ONLY_MAIN: true
 
 jobs:
   process-set-versioning-file:
@@ -41,9 +41,10 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          base_branch=$(gh pr view ${{ github.event.issue.number }} --json baseRefName | jq -r '.baseRefName')
-          if [[ $VERSIONING_ENSURE_ONLY_MAIN && $base_branch != "main" ]]; then 
-            echo -n 'You can only use /set-version when the base branch of your PR is main. Your current base branch is $base_branch.\n\n\nTo turn this check off, set VERSIONING_ENSURE_ONLY_MAIN to false in set_version.yml.'
+          echo "BASE_BRANCH=$(gh pr view ${{ github.event.issue.number }} --json baseRefName | jq -r '.baseRefName')" >> $GITHUB_ENV
+          echo "Versioning only in main? $VERSIONING_ONLY_MAIN"
+          if [[ $VERSIONING_ONLY_MAIN && $BASE_BRANCH != "main" ]]; then 
+            echo -ne 'You can only use /set-version when the base branch of your PR is main. Your current base branch is $base_branch.\n\nTo turn this off, set VERSIONING_ONLY_MAIN to false in set_version.yml.'
             exit 1
           fi
           gh pr checkout ${{ github.event.issue.number }}
