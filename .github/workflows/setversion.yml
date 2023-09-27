@@ -20,7 +20,7 @@ jobs:
       - name: React to comment
         uses: dkershner6/reaction-action@v1
         with:
-          token: $GITHUB_TOKEN
+          token: ${{ secrets.GITHUB_TOKEN }}
           reaction: "rocket"
       - name: checkout repository
         uses: actions/checkout@v4
