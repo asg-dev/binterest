@@ -1,31 +1,34 @@
 name: Set Version
-on: 
+on:
   issue_comment:
     types:
       - created
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # VERSIONING_ENSURE_ONLY_MAIN can be used to enforce versioning functionality only when the base branch of the PR is main.
+  VERSIONING_ENSURE_ONLY_MAIN: true
 
 jobs:
-  process-set-version:
+  process-set-versioning-file:
     runs-on: ubuntu-latest
-    # run only if it's a comment on a pull_request and the comment body contains the string '/set-version'
-    if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/set-version') && github.ref_name == 'main' }}
+    # Run only if it's a comment on a pull_request and the comment body contains the string '/set-version'.
+    if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/set-version') }}
     steps:
-      - name: ensure formatting of version number
-        id: ensure_version_number
+      - name: check formatting of version number
+        id: check_version_number
         shell: bash
-        # we ensure that our versioning scheme matches "v[0-9]+.[0-9]+.[0-9]+[A-Za-z]?" e.g. v0.0.1, v0.0.1A
+        # Ensure that our versioning scheme matches "v[0-9]+.[0-9]+.[0-9]+[A-Za-z]?" e.g. v0.0.1, v0.0.1A
+        # Also ensures that the comment is formatted as expected.
         run: |
-          if [[ "${{ github.event.comment.body }}" =~ version\=v[0-9]+\.[0-9]+\.[0-9]+[a-zA-Z]?$ ]]; then
+          if [[ "${{ github.event.comment.body }}" =~ ^\/set-version\sversion\=v[0-9]+\.[0-9]+\.[0-9]+[a-zA-Z]?$ ]]; then
             echo "VERSION_FORMATTED=true" >> $GITHUB_OUTPUT
           fi
-      - run: echo ${{ steps.ensure_version_number.outputs.VERSION_FORMATTED }}
-      - name: ensure formatting of comment
-        # if unformatted, don't proceed with the next steps
-        if: ${{ steps.ensure_version_number.outputs.VERSION_FORMATTED != 'true' }}
+      - name: ensure formatting of version number
         run: |
-          exit 1
+          if [[ ${{ steps.check_version_number.outputs.VERSION_FORMATTED != 'true' }} ]]; then
+            echo 'The formatting for the version number is incorrect. Usage: /set-version version=vX.X.X[A]; e.g. v0.1.1, v10.20.30A'
+            exit 1
+          fi
       - name: get version number
         id: get_version_number
         shell: bash
@@ -38,13 +41,13 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          base=$(gh pr view ${{ github.event.issue.number }} --json baseRefName | jq -r '.baseRefName')
-          echo "Detected base branch of the PR: $base"
-          if [[ $base != "main" ]]; then
+          base_branch=$(gh pr view ${{ github.event.issue.number }} --json baseRefName | jq -r '.baseRefName')
+          if [[ $VERSIONING_ENSURE_ONLY_MAIN && $base_branch != "main" ]]; then 
+            echo -n 'You can only use /set-version when the base branch of your PR is main. Your current base branch is $base_branch.\n\n\nTo turn this check off, set VERSIONING_ENSURE_ONLY_MAIN to false in set_version.yml.'
             exit 1
-          fi
+          }
           gh pr checkout ${{ github.event.issue.number }}
           echo -n "${{ steps.get_version_number.outputs.VERSION_NUMBER }}" > version
           git add -A
-          git commit -m "[set-version-command] include/update version file"
+          git commit -m "[set-versioning-file] include/update version file"
           git push
