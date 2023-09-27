@@ -15,25 +15,22 @@ jobs:
       - name: ensure formatting of version number
         id: ensure_version_number
         shell: bash
-        # we ensure that our versioning scheme matches v0.0.1A
+        # we ensure that our versioning scheme matches "v\d.\d.\d[A-Za-z]?" e.g. v0.0.1, v0.0.1A
         run: |
-          if [[ "${{ github.event.comment.body }}" =~ version\=v[0-9]+\.[0-9]+\.[0-9]+[a-zA-Z]{0,1}$ ]]; then
+          if [[ "${{ github.event.comment.body }}" =~ version\=v\d+\.\d+\.\d+[a-zA-Z]?$ ]]; then
             echo "VERSION_FORMATTED=true" >> $GITHUB_OUTPUT
           fi
       - name: ensure formatting of comment
+        # if unformatted, don't proceed with the next steps
+        if: ${{ steps.ensure_version_number.outputs.VERSION_FORMATTED != true }}
         run: |
-          echo ${{ steps.ensure_version_number.outputs.VERSION_FORMATTED }}
+          exit 1
       - name: get version number
         id: get_version_number
         shell: bash
         run: |
           vno=$(echo ${{ github.event.comment.body }} | cut -d "=" -f 2)
           echo "VERSION_NUMBER=$vno" >> $GITHUB_OUTPUT
-      - name: React to comment
-        uses: dkershner6/reaction-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          reaction: "rocket"
       - name: checkout repository
         uses: actions/checkout@v4
       - name: add versioning
