@@ -41,7 +41,7 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          echo "BASE_BRANCH=$(gh pr view ${{ github.event.issue.number }} --json baseRefName | jq -r '.baseRefName')" >> $GITHUB_ENV
+          BASE_BRANCH=$(gh pr view ${{ github.event.issue.number }} --json baseRefName | jq -r '.baseRefName')
           echo "Versioning only in main? $VERSIONING_ONLY_MAIN"
           echo "Base Branch: $BASE_BRANCH"
           if [[ $VERSIONING_ONLY_MAIN && $BASE_BRANCH != "main" ]]; then 
