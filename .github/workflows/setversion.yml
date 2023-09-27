@@ -21,7 +21,7 @@ jobs:
         shell: bash
         # we ensure that our versioning scheme matches v0.0.1A
         run: |
-          [[ ${{ github.event.comment.body }} =~ ^/set-version version=v[0-9]+\.[0-9]+\.[0-9]+[a-zA-Z]{0,1}$ ]] && echo "::set-output name=VERSION_FORMATTED::true"
+          [[ ${{ github.event.comment.body }} =~ "^/set-version version=v[0-9]+\.[0-9]+\.[0-9]+[a-zA-Z]{0,1}$" ]] && echo "::set-output name=VERSION_FORMATTED::true"
       - name: ensure formatting of comment
         if: ${{ steps.ensure_version_number.outputs.VERSION_FORMATTED != 'true' }}
         # fail job if comment body does not contain the version in correct format
