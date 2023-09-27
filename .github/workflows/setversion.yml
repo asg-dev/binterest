@@ -43,6 +43,7 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           echo "BASE_BRANCH=$(gh pr view ${{ github.event.issue.number }} --json baseRefName | jq -r '.baseRefName')" >> $GITHUB_ENV
           echo "Versioning only in main? $VERSIONING_ONLY_MAIN"
+          echo "Base Branch: $BASE_BRANCH"
           if [[ $VERSIONING_ONLY_MAIN && $BASE_BRANCH != "main" ]]; then 
             echo -ne 'You can only use /set-version when the base branch of your PR is main. Your current base branch is $BASE_BRANCH.\n\nTo turn this off, set VERSIONING_ONLY_MAIN to false in set_version.yml.'
             exit 1
