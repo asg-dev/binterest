@@ -14,9 +14,6 @@ jobs:
     # Run only if it's a comment on a pull_request and the comment body contains the string '/set-version'.
     if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/set-version') }}
     steps:
-      - name: print context
-        run: |
-          echo "${{ toJSON(env) }}"
       - name: Check formatting of version number
         id: check_version_number
         shell: bash
@@ -43,7 +40,7 @@ jobs:
         if: github.VERSIONING_ONLY_MAIN == 'true'
         run: |
           BASE_BRANCH=$(gh pr view ${{ github.event.issue.number }} --json baseRefName | jq -r '.baseRefName')
-          if [[ $ && $BASE_BRANCH != "main" ]]; then 
+          if [[ $VERSIONING_ONLY_MAIN && $BASE_BRANCH != "main" ]]; then 
             echo -ne "You can only use /set-version when the base branch of your PR is main. Your current base branch is $BASE_BRANCH.\n\nTo turn this off, set VERSIONING_ONLY_MAIN to false in set_version.yml.\n\n"
             exit 1
           fi
