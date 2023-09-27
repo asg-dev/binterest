@@ -37,7 +37,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Check if base branch is main
-        if: github.VERSIONING_ONLY_MAIN == 'true'
+        if: ${{ env.VERSIONING_ONLY_MAIN == 'true' }}
         run: |
           BASE_BRANCH=$(gh pr view ${{ github.event.issue.number }} --json baseRefName | jq -r '.baseRefName')
           if [[ $VERSIONING_ONLY_MAIN && $BASE_BRANCH != "main" ]]; then 
