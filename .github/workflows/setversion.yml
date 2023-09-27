@@ -1,6 +1,8 @@
 name: Set Version
 on: 
   issue_comment:
+    types:
+      - created
     branches:
       - 'EVM1_*'
 env:
