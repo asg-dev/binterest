@@ -38,7 +38,7 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          base=$(gh pr view ${{ github.event.issue.number }} | jq -r '.baseRefName')
+          base=$(gh pr view ${{ github.event.issue.number }} --json baseRefName | jq -r '.baseRefName')
           echo "Detected base branch of the PR: $base"
           if [[ $base != "main" ]]; then
             exit 1
