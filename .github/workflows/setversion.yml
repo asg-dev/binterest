@@ -25,7 +25,7 @@ jobs:
           fi
       - name: ensure formatting of version number
         run: |
-          if [[ ${{ steps.check_version_number.outputs.VERSION_FORMATTED != 'true' }} ]]; then
+          if [[ ${{ steps.check_version_number.outputs.VERSION_FORMATTED }} != "true" ]]; then
             echo 'The formatting for the version number is incorrect. Usage: /set-version version=vX.X.X[A]; e.g. v0.1.1, v10.20.30A'
             exit 1
           fi
