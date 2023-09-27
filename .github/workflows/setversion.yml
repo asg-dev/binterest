@@ -1,5 +1,8 @@
 name: Set Version
-on: [issue_comment]
+on: 
+  issue_comment:
+    branches:
+      - 'EVM1_*'
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -23,5 +26,5 @@ jobs:
           gh pr checkout ${{ steps.set_version_handler.outputs.PULL_REQUEST_NUMBER }}
           echo -n "${{ steps.set_version_handler.outputs.TRAILING_TOKEN }}" > version
           git add -A
-          git commit -m "[set-version-command] include version file"
+          git commit -m "[set-version-command] include/update version file"
           git push
