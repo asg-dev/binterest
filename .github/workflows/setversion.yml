@@ -1,4 +1,4 @@
-name: Set Version
+name: Set Versioning File
 on:
   issue_comment:
     types:
@@ -14,7 +14,7 @@ jobs:
     # Run only if it's a comment on a pull_request and the comment body contains the string '/set-version'.
     if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/set-version') }}
     steps:
-      - name: check formatting of version number
+      - name: Check formatting of version number
         id: check_version_number
         shell: bash
         # Ensure that our versioning scheme matches "v[0-9]+.[0-9]+.[0-9]+[A-Za-z]?" e.g. v0.0.1, v0.0.1A
@@ -23,28 +23,31 @@ jobs:
           if [[ "${{ github.event.comment.body }}" =~ ^\/set-version[[:blank:]]version\=v[0-9]+\.[0-9]+\.[0-9]+[a-zA-Z]?$ ]]; then
             echo "VERSION_FORMATTED=true" >> $GITHUB_OUTPUT
           fi
-      - name: ensure formatting of version number
+      - name: Ensure formatting of version number
         if: ${{ steps.check_version_number.outputs.VERSION_FORMATTED != 'true' }}
         run: |
           echo 'The formatting for the version number is incorrect. Usage: /set-version version=vX.X.X[A]; e.g. v0.1.1, v10.0.3D'
           exit 1
-      - name: get version number
+      - name: Get version number
         id: get_version_number
         shell: bash
         run: |
           vno=$(echo ${{ github.event.comment.body }} | cut -d "=" -f 2)
           echo "VERSION_NUMBER=$vno" >> $GITHUB_OUTPUT
-      - name: checkout repository
+      - name: Checkout repository
         uses: actions/checkout@v4
-      - name: add versioning
+      - name: Check if base branch is main
+        if: ${{ $VERSIONING_ONLY_MAIN == true }}
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           BASE_BRANCH=$(gh pr view ${{ github.event.issue.number }} --json baseRefName | jq -r '.baseRefName')
-          if [[ $VERSIONING_ONLY_MAIN && $BASE_BRANCH != "main" ]]; then 
+          if [[ $ && $BASE_BRANCH != "main" ]]; then 
             echo -ne "You can only use /set-version when the base branch of your PR is main. Your current base branch is $BASE_BRANCH.\n\nTo turn this off, set VERSIONING_ONLY_MAIN to false in set_version.yml.\n\n"
             exit 1
           fi
+      - name: Add versioning file
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           gh pr checkout ${{ github.event.issue.number }}
           echo -n "${{ steps.get_version_number.outputs.VERSION_NUMBER }}" > version
           git add -A
