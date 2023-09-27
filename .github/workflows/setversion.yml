@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: print context
         run: |
-          echo "${{ toJSON(github) }}"
+          echo "${{ toJSON(env) }}"
       - name: Check formatting of version number
         id: check_version_number
         shell: bash
