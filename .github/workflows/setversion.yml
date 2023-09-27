@@ -4,7 +4,7 @@ on:
     types:
       - created
     branches:
-      - 'EVM1_*'
+      - 'EVM1*'
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
