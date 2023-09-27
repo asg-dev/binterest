@@ -6,7 +6,7 @@ on:
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   # VERSIONING_ENSURE_ONLY_MAIN can be used to enforce versioning functionality only when the base branch of the PR is main.
-  VERSIONING_ONLY_MAIN: true
+  VERSIONING_ONLY_MAIN: false
 
 jobs:
   process-set-versioning-file:
