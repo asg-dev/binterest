@@ -14,10 +14,11 @@ jobs:
     steps:
       - name: ensure formatting of version number
         id: ensure_version_number
+        shell: bash
         # we ensure that our versioning scheme matches v0.0.1A
         run: |
           if [[ "${{ github.event.comment.body }}" =~ version\=v[0-9]+\.[0-9]+\.[0-9]+[a-zA-Z]{0,1}$ ]]; then
-            echo "VERSION_FORMATTED='true'" >> $GITHUB_OUTPUT
+            echo "VERSION_FORMATTED=true" >> $GITHUB_OUTPUT
           fi
       - name: ensure formatting of comment
         run: |
