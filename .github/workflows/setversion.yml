@@ -43,7 +43,7 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           base=$(gh pr view ${{ github.event.issue.number }} | jq -r '.baseRefName')
-          if [[ ! $base =~ "EVM1_*" ]]; then
+          if [[ ! $base =~ main ]]; then
             exit 1
           fi
           gh pr checkout ${{ github.event.issue.number }}
