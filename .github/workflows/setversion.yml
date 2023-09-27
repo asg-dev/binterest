@@ -49,7 +49,7 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           gh pr checkout ${{ github.event.issue.number }}
-          echo -n "${{ steps.get_version_number.outputs.VERSION_NUMBER }}" > version
+          echo -n "${{ steps.get_version_number.outputs.VERSION_NUMBER }}" > client/public/version
           git add -A
           git commit -m "[set-versioning-file] include/update version file"
           git push
