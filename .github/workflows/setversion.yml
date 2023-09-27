@@ -14,8 +14,8 @@ jobs:
     steps:
       - name: install jq
         run: |
-          apt update
-          apt install --assume-yes jq
+          sudo apt update
+          sudo apt install --assume-yes jq
       - name: ensure formatting of version number
         id: ensure_version_number
         shell: bash
