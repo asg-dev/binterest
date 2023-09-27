@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require("apollo-server");
+const { ApolloServer, gql } = require("apollo-server")
 const uuid = require("uuid");
 const axios = require("axios");
 const { createClient } = require("redis");
