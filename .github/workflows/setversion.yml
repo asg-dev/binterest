@@ -13,7 +13,7 @@ jobs:
     if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/set-version') && github.ref_name == 'main' }}
     steps:
       - run: |
-          echo "ref_name --> ${{ github.ref_name }}"
+          echo "base_ref --> ${{ github.base_ref }}"
       - name: listen for PR Comments
         id: set_version_handler
         uses: machine-learning-apps/actions-chatops@master
