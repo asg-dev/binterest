@@ -5,7 +5,7 @@ on:
       - created
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  # VERSIONING_ENSURE_ONLY_MAIN can be used to enforce versioning functionality only when the base branch of the PR is main.
+  # VERSIONING_ONLY_MAIN can be used to enforce versioning functionality only when the base branch of the PR is main.
   VERSIONING_ONLY_MAIN: false
 
 jobs:
@@ -14,20 +14,16 @@ jobs:
     # Run only if it's a comment on a pull_request and the comment body contains the string '/set-version'.
     if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/set-version') }}
     steps:
-      - name: Check formatting of version number
+      - name: Ensure proper formatting of version number
         id: check_version_number
         shell: bash
         # Ensure that our versioning scheme matches "v[0-9]+.[0-9]+.[0-9]+[A-Za-z]?" e.g. v0.0.1, v0.0.1A
         # Also ensures that the comment is formatted as expected.
         run: |
           if [[ "${{ github.event.comment.body }}" =~ ^\/set-version[[:blank:]]version\=v[0-9]+\.[0-9]+\.[0-9]+[a-zA-Z]?$ ]]; then
-            echo "VERSION_FORMATTED=true" >> $GITHUB_OUTPUT
+            echo -ne 'Invalid command. Usage: /set-version version=vX.X.X[A]\ne.g. v0.1.1, v10.0.3D'
+            exit 1
           fi
-      - name: Fail job if version number is malformed
-        if: ${{ steps.check_version_number.outputs.VERSION_FORMATTED != 'true' }}
-        run: |
-          echo 'The formatting for the version number is incorrect. Usage: /set-version version=vX.X.X[A]; e.g. v0.1.1, v10.0.3D'
-          exit 1
       - name: Get version number
         id: get_version_number
         shell: bash
@@ -49,7 +45,7 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           gh pr checkout ${{ github.event.issue.number }}
-          echo -n "${{ steps.get_version_number.outputs.VERSION_NUMBER }}" > client/public/version
+          echo -n "${{ steps.get_version_number.outputs.VERSION_NUMBER }}" > files/root/fw_version
           git add -A
           git commit -m "[set-versioning-file] include/update version file"
           git push
