@@ -17,10 +17,10 @@ jobs:
       - name: Ensure proper formatting of version number
         id: check_version_number
         shell: bash
-        # Ensure that our versioning scheme matches "v[0-9]+.[0-9]+.[0-9]+[A-Za-z]?" e.g. v0.0.1, v0.0.1A
+        # Ensure that our versioning scheme matches "v[0-9]+.[0-9]+.[0-9]+[A-Za-z]?" e.g. v0.01, v0.01A, v0.1A
         # Also ensures that the comment is formatted as expected.
         run: |
-          if [[ ! "${{ github.event.comment.body }}" =~ ^\/set-version[[:blank:]]version\=v[0-9]+\.[0-9]+\.[0-9]+[a-zA-Z]?$ ]]; then
+          if [[ ! "${{ github.event.comment.body }}" =~ ^\/set-version[[:blank:]]version\=v[0-9]+\.[0-9]?[0-9]{1}[a-zA-Z]?$ ]]; then
             echo -ne 'Invalid command. Usage: /set-version version=vX.X.X[A]\ne.g. v0.1.1, v10.0.3D'
             exit 1
           fi
