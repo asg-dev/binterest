@@ -4,6 +4,7 @@ on:
     types: ['opened', 'synchronize']
 permissions:
   contents: write
+  pull-requests: write
 env:
   GH_TOKEN: ${{ github.token }}
     
