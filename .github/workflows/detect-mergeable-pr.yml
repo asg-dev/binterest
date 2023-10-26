@@ -9,8 +9,10 @@ jobs:
   detect-mergeability:
     runs-on: ubuntu-latest
     steps:
+    - run: |
+        echo ${{ github.event.pull_request.mergeable }}
     - name: Notify workflow failure if PR is not mergeable
-      if: ${{ ! github.event.pull_request.mergeable == 'MERGEABLE' }}
+      if: ${{ ! github.event.pull_request.mergeable == true }}
       uses: actions/github-script@v3
       with: 
         script: |
