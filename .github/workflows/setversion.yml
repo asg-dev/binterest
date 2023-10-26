@@ -1,5 +1,5 @@
 name: Set Version
-# fix for gha 12
+# fix for gha 13
 on: 
   issue_comment:
     types:
