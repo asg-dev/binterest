@@ -1,4 +1,4 @@
-name: Detect if PR is mergeable and notify
+name: detect-mergeability
 on:
   pull_request_target:
     types: ['opened', 'synchronize']
@@ -9,14 +9,8 @@ jobs:
   detect-mergeability:
     runs-on: ubuntu-latest
     steps:
-    - name: Detect if PR is mergeable
-      id: detect-mergeability
-      run: |
-        if [[ ! $(gh pr view ${{ github.event.pull_request.number }} --json mergeable --jq '.mergeable') -eq 'MERGEABLE' ]]; then
-          echo "MERGEABLE=no" >> $GITHUB_OUTPUT
-        fi
     - name: Notify workflow failure if PR is not mergeable
-      if: ${{ steps.detect-mergeability.outputs.MERGEABLE == 'no' }}
+      if: ${{ ! github.event.pull_request.mergeable == 'MERGEABLE' }}
       uses: actions/github-script@v3
       with: 
         script: |
