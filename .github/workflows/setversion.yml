@@ -1,4 +1,5 @@
 name: Set Version
+# fix for gha
 on: 
   issue_comment:
     types:
