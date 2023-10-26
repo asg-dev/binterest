@@ -31,8 +31,10 @@ jobs:
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         
         gh pr checkout ${{ github.event.pull_request.number }}
-        echo "What's the filepath ->" $ENV_FILE_PATH
         echo -n "${{ steps.set-build-env.outputs.BUILD_ENV }}" > $ENV_FILE_PATH
+
+        echo "Checking git diff here..."
+        git diff $ENV_FILE_PATH
         
         if git diff --quiet --exit-code $ENV_FILE_PATH; then
           exit 2
