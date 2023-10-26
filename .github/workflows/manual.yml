@@ -1,7 +1,7 @@
 name: Set Environment
 on:
   pull_request:
-    types: ['opened']
+    types: ['opened', 'synchronized']
     
 jobs:
   set-environment:
