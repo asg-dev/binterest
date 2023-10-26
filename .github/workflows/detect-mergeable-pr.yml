@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - run: |
-        echo '${{ toJson(github) }}'
+        echo '${{ toJSON(github) }}'
     - name: Notify workflow failure if PR is not mergeable
       if: github.event.pull_request.mergeable != true
       uses: actions/github-script@v3
