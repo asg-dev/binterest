@@ -4,6 +4,8 @@ on:
     types: ['opened', 'synchronize']
 permissions:
   contents: write
+env:
+  GH_TOKEN: ${{ github.token }}
     
 jobs:
   set-environment:
