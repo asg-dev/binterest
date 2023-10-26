@@ -38,7 +38,7 @@ jobs:
         git commit -m "[set-build-env] include build env"
         git push
     - name: Comment successful build environment addition
-      if: steps.create-env-file.conclusion != 'failure'
+      if: steps.create-env-file.outcome != 'failure'
       uses: actions/github-script@v3
       with: 
         script: |
