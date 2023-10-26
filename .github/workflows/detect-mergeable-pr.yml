@@ -2,6 +2,8 @@ name: detect-mergeability
 on:
   pull_request_target:
     types: ['opened', 'synchronize']
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
 jobs:
   detect-mergeability:
