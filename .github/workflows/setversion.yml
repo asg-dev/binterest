@@ -3,8 +3,7 @@ on:
   issue_comment:
     types:
       - created
-    branches:
-      - '**'
+
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
