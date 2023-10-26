@@ -34,6 +34,7 @@ jobs:
         echo -n "${{ steps.set-build-env.outputs.BUILD_ENV }}" > $ENV_FILE_PATH
 
         echo "Checking git diff here..."
+        echo $ENV_FILE_PATH
         git diff $ENV_FILE_PATH
         
         if git diff --quiet --exit-code $ENV_FILE_PATH; then
