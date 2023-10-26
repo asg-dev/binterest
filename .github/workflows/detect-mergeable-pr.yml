@@ -1,0 +1,17 @@
+    - name: Detect if PR is mergeable
+      id: detect-mergeability
+      run: |
+        if [[ ! $(gh pr view 10 --json mergeable --jq '.mergeable') -eq 'MERGEABLE' ]]; then
+          echo "MERGEABLE=no" >> $GITHUB_OUTPUT
+        fi
+    - name: Notify workflow failure if PR is not mergeable
+      if: ${{ steps.detect-mergeability.outputs.MERGEABLE == 'no' }}
+      uses: actions/github-script@v3
+      with: 
+        script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '[SET-BUILD-ENVIRONMENT]: Unable to detect build environment as PR is not mergeable (most probably contains merge conflicts). Fix merge conflicts in the source branch and push to rerun the workflow.'
+            })
