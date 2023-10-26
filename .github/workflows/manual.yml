@@ -16,7 +16,7 @@ jobs:
     - name: Set environment to local variable
       id: set-build-env
       run: |
-        if [[ ${{ github.event.pull_request.base.ref == 'main' }} ]]; then
+        if [[ ${{ github.event.pull_request.base.ref }} == 'main' ]]; then
           echo "BUILD_ENV=PRODUCTION" >> $GITHUB_OUTPUT
         else
           echo "BUILD_ENV=DEVELOPMENT" >> $GITHUB_OUTPUT
