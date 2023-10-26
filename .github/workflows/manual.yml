@@ -2,8 +2,6 @@ name: Set Environment
 on:
   pull_request:
     types: ['opened', 'synchronize']
-env:
- GH_TOKEN: ${{ github.token }}
     
 jobs:
   set-environment:
@@ -17,6 +15,8 @@ jobs:
         else
           echo "BUILD_ENVIRONMENT=DEVELOPMENT" >> $GITHUB_OUTPUT
         fi
+    - name: checkout repository
+      uses: actions/checkout@v4
     - name: Create environment file
       run: |
         git config --global user.name 'github-actions[bot]'
