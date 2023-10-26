@@ -4,8 +4,10 @@ on:
     types: ['opened', 'synchronize']
 permissions:
   contents: write
+  pull-requests: write
 env:
   GH_TOKEN: ${{ github.token }}
+  ENV_FILE_PATH: build_env
     
 jobs:
   set-environment:
@@ -14,7 +16,7 @@ jobs:
     - name: Set environment to local variable
       id: set-build-env
       run: |
-        if [[ ${{ github.base_ref == 'main' }} ]]; then
+        if [[ ${{ github.event.pull_request.base.ref == 'main' }} ]]; then
           echo "BUILD_ENV=PRODUCTION" >> $GITHUB_OUTPUT
         else
           echo "BUILD_ENV=DEVELOPMENT" >> $GITHUB_OUTPUT
@@ -22,15 +24,26 @@ jobs:
     - name: checkout repository
       uses: actions/checkout@v4
     - name: Create environment file
+      id: create-env-file
+      continue-on-error: true
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        
         gh pr checkout ${{ github.event.pull_request.number }}
-        echo -n "${{ steps.set-build-env.outputs.BUILD_ENV }}" > build_env
+        echo -n "${{ steps.set-build-env.outputs.BUILD_ENV }}" > $ENV_FILE_PATH
+
         git add -A
+        if git diff --staged --quiet $ENV_FILE_PATH; then
+          exit 2
+        fi
+        
         git commit -m "[set-build-env] include build env"
         git push
+    - run: |
+        echo 'OUTCOME -> ${{ steps.create-env-file.outcome }}; CONCLUSION -> ${{ steps.create-env-file.conclusion }}'
     - name: Comment successful build environment addition
+      if: steps.create-env-file.outcome != 'failure'
       uses: actions/github-script@v3
       with: 
         script: |
@@ -38,5 +51,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "Detected build environment '${{ steps.set-build-env.outputs.BUILD_ENVIRONMENT }}' written to build_env file. Do not overwrite this file."
+              body: "Detected build environment '${{ steps.set-build-env.outputs.BUILD_ENV }}' written to build_env file. Do not overwrite this file."
             })
