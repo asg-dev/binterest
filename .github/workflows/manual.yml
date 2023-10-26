@@ -41,11 +41,11 @@ jobs:
         cat $ENV_FILE_PATH
         git diff $ENV_FILE_PATH
         
-        if git diff --quiet --exit-code $ENV_FILE_PATH; then
+        git add -A
+        if git diff --staged --quiet $ENV_FILE_PATH; then
           exit 2
         fi
         
-        git add -A
         git commit -m "[set-build-env] include build env"
         git push
     - run: |
