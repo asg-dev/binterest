@@ -7,6 +7,7 @@ permissions:
   pull-requests: write
 env:
   GH_TOKEN: ${{ github.token }}
+  ENV_FILE_PATH: build_env
     
 jobs:
   set-environment:
@@ -23,15 +24,21 @@ jobs:
     - name: checkout repository
       uses: actions/checkout@v4
     - name: Create environment file
+      id: create-env-file
+      continue-on-error: true
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         gh pr checkout ${{ github.event.pull_request.number }}
-        echo -n "${{ steps.set-build-env.outputs.BUILD_ENV }}" > build_env
+        echo -n "${{ steps.set-build-env.outputs.BUILD_ENV }}" > $ENV_FILE_PATH
+        if [[ $(git diff --quiet --exit-code $ENV_FILE_PATH) -eq 0 ]]; then
+          exit 1
+        fi  
         git add -A
         git commit -m "[set-build-env] include build env"
         git push
     - name: Comment successful build environment addition
+      if: steps.create-env-file.conclusion != 'failure'
       uses: actions/github-script@v3
       with: 
         script: |
