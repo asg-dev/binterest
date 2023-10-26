@@ -12,7 +12,7 @@ jobs:
     - name: Detect if PR is mergeable
       id: detect-mergeability
       run: |
-        if [[ ! $(gh pr view 10 --json mergeable --jq '.mergeable') -eq 'MERGEABLE' ]]; then
+        if [[ ! $(gh pr view ${{ github.event.issue.number }} --json mergeable --jq '.mergeable') -eq 'MERGEABLE' ]]; then
           echo "MERGEABLE=no" >> $GITHUB_OUTPUT
         fi
     - name: Notify workflow failure if PR is not mergeable
