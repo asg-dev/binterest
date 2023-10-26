@@ -11,9 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - run: |
-        echo ${{ github.event.pull_request.mergeable }}
+        echo ${{ toJSON(github.event.pull_request) }}
     - name: Notify workflow failure if PR is not mergeable
-      if: ${{ ! github.event.pull_request.mergeable == true }}
+      if: github.event.pull_request.mergeable != true
       uses: actions/github-script@v3
       with: 
         script: |
