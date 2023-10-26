@@ -39,5 +39,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "Detected build environment '${{ steps.set-build-env.outputs.BUILD_ENVIRONMENT }}' written to build_env file. Do not overwrite this file."
+              body: "Detected build environment '${{ steps.set-build-env.outputs.BUILD_ENV }}' written to build_env file. Do not overwrite this file."
             })
