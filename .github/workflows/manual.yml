@@ -1,0 +1,36 @@
+name: Set Environment
+on:
+  pull_request:
+    types: ['opened']
+    
+jobs:
+  set-environment:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set environment to local variable
+      id: set-build-env
+      run: |
+        if [[ ${{ github.base_ref == 'main' }} ]]; then
+          echo "BUILD_ENVIRONMENT=PRODUCTION" >> $GITHUB_OUTPUT
+        else
+          echo "BUILD_ENVIRONMENT=DEVELOPMENT" >> $GITHUB_OUTPUT
+        fi
+    - name: Create environment file
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        gh pr checkout ${{ github.event.issue.number }}
+        echo -n "${{ steps.set-build-env.outputs.BUILD_ENVIRONMENT }}" > build_environment
+        git add -A
+        git commit -m "[set-build-env] include build environment"
+        git push
+    - name: Comment successful build environment addition
+      uses: actions/github-script@v3
+      with: 
+        script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Detected build environment as '${{ steps.set-build-env.outputs.BUILD_ENVIRONMENT }}'! Do not overwrite this file.'
+            })
