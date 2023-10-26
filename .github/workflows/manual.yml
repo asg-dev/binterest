@@ -29,6 +29,9 @@ jobs:
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+        echo "Hello tehre"
+        cat $ENV_FILE_PATH
         
         gh pr checkout ${{ github.event.pull_request.number }}
         echo -n "${{ steps.set-build-env.outputs.BUILD_ENV }}" > $ENV_FILE_PATH
