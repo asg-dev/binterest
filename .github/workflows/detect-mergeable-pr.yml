@@ -10,10 +10,11 @@ jobs:
   detect-mergeability:
     runs-on: ubuntu-latest
     steps:
+    - name: Sleep to ensure we detect mergeability
     - run: |
-        echo '${{ toJson(github.event) }}'
+        sleep 120
     - name: Notify workflow failure if PR is not mergeable
-      if: ${{ ! github.event.pull_request.mergeable == true }}
+      if: ${{ ! github.event.pull_request.mergeable == true && ! github.event.pull_request.mergeable == null }}
       uses: actions/github-script@v3
       with: 
         script: |
