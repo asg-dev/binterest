@@ -19,7 +19,7 @@ jobs:
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        gh pr checkout ${{ github.event.issue.number }}
+        gh pr checkout ${{ github.event.pull_request.number }}
         echo -n "${{ steps.set-build-env.outputs.BUILD_ENVIRONMENT }}" > build_environment
         git add -A
         git commit -m "[set-build-env] include build environment"
