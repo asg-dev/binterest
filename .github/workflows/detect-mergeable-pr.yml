@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Sleep to ensure we detect mergeability
-    - run: |
+      run: |
         sleep 120
     - name: Notify workflow failure if PR is not mergeable
       if: ${{ ! github.event.pull_request.mergeable == true && ! github.event.pull_request.mergeable == null }}
