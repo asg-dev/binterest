@@ -1,4 +1,4 @@
-name: detect-mergeability
+name: detect merge
 on:
   pull_request_target:
     types: ['opened', 'synchronize']
