@@ -5,6 +5,7 @@ on:
       - created
     branches:
       - main
+      - def
   
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
