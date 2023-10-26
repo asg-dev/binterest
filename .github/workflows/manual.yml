@@ -15,9 +15,9 @@ jobs:
       id: set-build-env
       run: |
         if [[ ${{ github.base_ref == 'main' }} ]]; then
-          echo "BUILD_ENVIRONMENT=PRODUCTION" >> $GITHUB_OUTPUT
+          echo "BUILD_ENV=PRODUCTION" >> $GITHUB_OUTPUT
         else
-          echo "BUILD_ENVIRONMENT=DEVELOPMENT" >> $GITHUB_OUTPUT
+          echo "BUILD_ENV=DEVELOPMENT" >> $GITHUB_OUTPUT
         fi
     - name: checkout repository
       uses: actions/checkout@v4
@@ -26,9 +26,9 @@ jobs:
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         gh pr checkout ${{ github.event.pull_request.number }}
-        echo -n "${{ steps.set-build-env.outputs.BUILD_ENVIRONMENT }}" > build_environment
+        echo -n "${{ steps.set-build-env.outputs.BUILD_ENV }}" > build_env
         git add -A
-        git commit -m "[set-build-env] include build environment"
+        git commit -m "[set-build-env] include build env"
         git push
     - name: Comment successful build environment addition
       uses: actions/github-script@v3
@@ -38,5 +38,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'Detected build environment as '${{ steps.set-build-env.outputs.BUILD_ENVIRONMENT }}'! Do not overwrite this file.'
+              body: "Detected build environment '${{ steps.set-build-env.outputs.BUILD_ENVIRONMENT }}' written to build_env file. Do not overwrite this file."
             })
