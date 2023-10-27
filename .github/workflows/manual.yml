@@ -23,6 +23,20 @@ jobs:
         fi
     - name: checkout repository
       uses: actions/checkout@v4
+    # deleting stale environment file in head to prevent merge conflicts with the base branch
+    - name: Delete stale environment file in head
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        
+        gh pr checkout ${{ github.event.pull_request.number }}
+        if [[ -f $ENV_FILE_PATH ]]; then
+          rm $ENV_FILE_PATH
+        fi
+
+        git add -A
+        git commit -m "[set-build-env] delete stale build_env"
+        git push
     - name: Create environment file
       id: create-env-file
       continue-on-error: true
@@ -30,7 +44,6 @@ jobs:
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         
-        # gh pr checkout ${{ github.event.pull_request.number }}
         echo -n "${{ steps.set-build-env.outputs.BUILD_ENV }}" > $ENV_FILE_PATH
 
         git add -A
