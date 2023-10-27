@@ -2,6 +2,7 @@ name: Set Environment
 on:
   pull_request_target:
     types: ['opened', 'synchronize']
+    branches: ['main']
 permissions:
   contents: write
   pull-requests: write
@@ -12,26 +13,14 @@ env:
 jobs:
   set-environment:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.base.ref == 'main'
     steps:
     - name: Set environment to local variable
       id: set-build-env
       run: |
-        if [[ ${{ github.event.pull_request.base.ref }} == 'main' ]]; then
-          echo "BUILD_ENV=PRODUCTION" >> $GITHUB_OUTPUT
-        else
-          echo "BUILD_ENV=DEVELOPMENT" >> $GITHUB_OUTPUT
-        fi
+        echo "BUILD_ENV=PRODUCTION" >> $GITHUB_OUTPUT
     - name: checkout repository
       uses: actions/checkout@v4
-    # deleting stale environment file in head to prevent merge conflicts with the base branch
-    - name: Delete stale environment file in head
-      continue-on-error: true
-      run: |
-        git merge --no-ff --no-commit ${{ github.event.pull_request.base.ref }}
-        git reset HEAD $ENV_FILE_PATH
-        git checkout -- $ENV_FILE_PATH
-        git commit -m "merged main build_env"
-    # Manually checks out the base branch to apply changes directly to it
     - name: Create environment file
       id: create-env-file
       continue-on-error: true
@@ -39,7 +28,6 @@ jobs:
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-        git checkout ${{ github.event.pull_request.base.ref }}
         echo -n "${{ steps.set-build-env.outputs.BUILD_ENV }}" > $ENV_FILE_PATH
 
         git add -A
@@ -49,8 +37,6 @@ jobs:
         
         git commit -m "[set-build-env] include build env"
         git push
-    - run: |
-        echo 'OUTCOME -> ${{ steps.create-env-file.outcome }}; CONCLUSION -> ${{ steps.create-env-file.conclusion }}'
     - name: Comment successful build environment addition
       if: steps.create-env-file.outcome != 'failure'
       uses: actions/github-script@v3
