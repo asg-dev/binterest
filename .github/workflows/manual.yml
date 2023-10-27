@@ -27,7 +27,10 @@ jobs:
     - name: Delete stale environment file in head
       continue-on-error: true
       run: |
-        git checkout main -- $ENV_FILE_PATH
+        git merge --no-ff --no-commit ${{ github.event.pull_request.base.ref }}
+        git reset HEAD $ENV_FILE_PATH
+        git checkout -- $ENV_FILE_PATH
+        git commit -m "merged main build_env"
     # Manually checks out the base branch to apply changes directly to it
     - name: Create environment file
       id: create-env-file
