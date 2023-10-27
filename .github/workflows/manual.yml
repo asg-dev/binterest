@@ -33,10 +33,11 @@ jobs:
         if [[ -f $ENV_FILE_PATH ]]; then
           rm $ENV_FILE_PATH
         fi
-
-        git add -A
-        git commit -m "[set-build-env] delete stale build_env"
-        git push
+        if ! git diff --staged --quiet $ENV_FILE_PATH; then
+          git add -A
+          git commit -m "[set-build-env] delete stale build_env"
+          git push
+        fi
     - name: Create environment file
       id: create-env-file
       continue-on-error: true
