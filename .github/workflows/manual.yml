@@ -25,20 +25,9 @@ jobs:
       uses: actions/checkout@v4
     # deleting stale environment file in head to prevent merge conflicts with the base branch
     - name: Delete stale environment file in head
+      continue-on-error: true
       run: |
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        
-        gh pr checkout ${{ github.event.pull_request.number }}
-        if [[ -f $ENV_FILE_PATH ]]; then
-          rm $ENV_FILE_PATH
-        fi
-        # push only if changes are detected!
-        if [[ -n "$(git status --porcelain)" ]]; then
-          git add -A
-          git commit -m "[set-build-env] delete stale build_env"
-          git push
-        fi
+        git checkout main -- $ENV_FILE_PATH
     # Manually checks out the base branch to apply changes directly to it
     - name: Create environment file
       id: create-env-file
