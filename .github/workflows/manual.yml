@@ -33,7 +33,8 @@ jobs:
         if [[ -f $ENV_FILE_PATH ]]; then
           rm $ENV_FILE_PATH
         fi
-        if ! git diff --staged --quiet $ENV_FILE_PATH; then
+        # push only if changes are detected!
+        if [[ -n "$(git status --porcelain)" ]]; then
           git add -A
           git commit -m "[set-build-env] delete stale build_env"
           git push
