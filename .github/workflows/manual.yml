@@ -30,7 +30,7 @@ jobs:
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         
-        gh pr checkout ${{ github.event.pull_request.number }}
+        # gh pr checkout ${{ github.event.pull_request.number }}
         echo -n "${{ steps.set-build-env.outputs.BUILD_ENV }}" > $ENV_FILE_PATH
 
         git add -A
